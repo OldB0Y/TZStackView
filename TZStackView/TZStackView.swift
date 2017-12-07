@@ -19,22 +19,27 @@ func ==(lhs: TZAnimationDidStopQueueEntry, rhs: TZAnimationDidStopQueueEntry) ->
 
 public class TZStackView: UIView {
 
+    @objc
     public var distribution: TZStackViewDistribution = .fill {
         didSet {
             setNeedsUpdateConstraints()
         }
     }
 
+    @objc
     public var axis: UILayoutConstraintAxis = .horizontal {
         didSet {
             setNeedsUpdateConstraints()
         }
     }
-    
+
+    @objc
     public var alignment: TZStackViewAlignment = .fill
 
+    @objc
     public var spacing: CGFloat = 0
-    
+
+    @objc
     public var layoutMarginsRelativeArrangement = false
 
     public private(set) var arrangedSubviews: [UIView] = [] {
@@ -57,6 +62,7 @@ public class TZStackView: UIView {
     
     private var animatingToHiddenViews = [UIView]()
 
+    @objc(initWithArrangedSubviews:)
     public init(arrangedSubviews: [UIView] = []) {
         super.init(frame: CGRect(x: 0, y: 0, width: 0, height: 0))
         for arrangedSubview in arrangedSubviews {
@@ -131,6 +137,7 @@ public class TZStackView: UIView {
         addHiddenListener(arrangedSubview)
     }
 
+    @objc
     func hiddenAnimationStopped() {
         var queueEntriesToRemove = [TZAnimationDidStopQueueEntry]()
         for entry in animationDidStopQueueEntries {
@@ -183,9 +190,9 @@ public class TZStackView: UIView {
                 let guideConstraint: NSLayoutConstraint
                 switch axis {
                 case .horizontal:
-                    guideConstraint = constraint(item: arrangedSubview, attribute: .height, toItem: nil, attribute: .notAnAttribute, constant: 0, priority: 25)
+                    guideConstraint = constraint(item: arrangedSubview, attribute: .height, toItem: nil, attribute: .notAnAttribute, constant: 0, priority: UILayoutPriority(rawValue: 25.0))
                 case .vertical:
-                    guideConstraint = constraint(item: arrangedSubview, attribute: .width, toItem: nil, attribute: .notAnAttribute, constant: 0, priority: 25)
+                    guideConstraint = constraint(item: arrangedSubview, attribute: .width, toItem: nil, attribute: .notAnAttribute, constant: 0, priority: UILayoutPriority(rawValue: 25))
                 }
                 subviewConstraints.append(guideConstraint)
                 arrangedSubview.addConstraint(guideConstraint)
@@ -223,7 +230,7 @@ public class TZStackView: UIView {
                 stackViewConstraints += createFirstAndLastViewMatchEdgesContraints()
                 
                 if alignment == .firstBaseline && axis == .horizontal {
-                    stackViewConstraints.append(constraint(item: self, attribute: .height, toItem: nil, attribute: .notAnAttribute, priority: 49))
+                    stackViewConstraints.append(constraint(item: self, attribute: .height, toItem: nil, attribute: .notAnAttribute, priority: UILayoutPriority(rawValue: 49)))
                 }
 
                 if distribution == .fillEqually {
@@ -256,12 +263,12 @@ public class TZStackView: UIView {
                 
                 switch axis {
                 case .horizontal:
-                    stackViewConstraints.append(constraint(item: self, attribute: .width, toItem: nil, attribute: .notAnAttribute, priority: 49))
+                    stackViewConstraints.append(constraint(item: self, attribute: .width, toItem: nil, attribute: .notAnAttribute, priority: UILayoutPriority(rawValue: 49)))
                     if alignment == .firstBaseline {
-                        stackViewConstraints.append(constraint(item: self, attribute: .height, toItem: nil, attribute: .notAnAttribute, priority: 49))
+                        stackViewConstraints.append(constraint(item: self, attribute: .height, toItem: nil, attribute: .notAnAttribute, priority: UILayoutPriority(rawValue: 49)))
                     }
                 case .vertical:
-                    stackViewConstraints.append(constraint(item: self, attribute: .height, toItem: nil, attribute: .notAnAttribute, priority: 49))
+                    stackViewConstraints.append(constraint(item: self, attribute: .height, toItem: nil, attribute: .notAnAttribute, priority: UILayoutPriority(rawValue: 49)))
                 }
 
                 stackViewConstraints += createFillConstraints(views, constant: 0)
@@ -282,12 +289,12 @@ public class TZStackView: UIView {
                 
                 switch axis {
                 case .horizontal:
-                    stackViewConstraints.append(constraint(item: self, attribute: .width, toItem: nil, attribute: .notAnAttribute, priority: 49))
+                    stackViewConstraints.append(constraint(item: self, attribute: .width, toItem: nil, attribute: .notAnAttribute, priority: UILayoutPriority(rawValue: 49)))
                     if alignment == .firstBaseline {
-                        stackViewConstraints.append(constraint(item: self, attribute: .height, toItem: nil, attribute: .notAnAttribute, priority: 49))
+                        stackViewConstraints.append(constraint(item: self, attribute: .height, toItem: nil, attribute: .notAnAttribute, priority: UILayoutPriority(rawValue: 49)))
                     }
                 case .vertical:
-                    stackViewConstraints.append(constraint(item: self, attribute: .height, toItem: nil, attribute: .notAnAttribute, priority: 49))
+                    stackViewConstraints.append(constraint(item: self, attribute: .height, toItem: nil, attribute: .notAnAttribute, priority: UILayoutPriority(rawValue: 49)))
                 }
 
                 var previousArrangedSubview: UIView?
@@ -367,18 +374,18 @@ public class TZStackView: UIView {
         for view in views {
             switch axis {
             case .horizontal:
-                constraints.append(constraint(item: spacerView, attribute: .top, relatedBy: topRelation, toItem: view, priority: topPriority))
-                constraints.append(constraint(item: spacerView, attribute: .bottom, relatedBy: bottomRelation, toItem: view, priority: bottomPriority))
+                constraints.append(constraint(item: spacerView, attribute: .top, relatedBy: topRelation, toItem: view, priority: UILayoutPriority(rawValue: topPriority)))
+                constraints.append(constraint(item: spacerView, attribute: .bottom, relatedBy: bottomRelation, toItem: view, priority: UILayoutPriority(rawValue: bottomPriority)))
             case .vertical:
-                constraints.append(constraint(item: spacerView, attribute: .leading, relatedBy: topRelation, toItem: view, priority: topPriority))
-                constraints.append(constraint(item: spacerView, attribute: .trailing, relatedBy: bottomRelation, toItem: view, priority: bottomPriority))
+                constraints.append(constraint(item: spacerView, attribute: .leading, relatedBy: topRelation, toItem: view, priority: UILayoutPriority(rawValue: topPriority)))
+                constraints.append(constraint(item: spacerView, attribute: .trailing, relatedBy: bottomRelation, toItem: view, priority: UILayoutPriority(rawValue: bottomPriority)))
             }
         }
         switch axis {
         case .horizontal:
-            constraints.append(constraint(item: spacerView, attribute: .height, relatedBy: .equal, toItem: nil, attribute: .notAnAttribute, constant: 0, priority: 51))
+            constraints.append(constraint(item: spacerView, attribute: .height, relatedBy: .equal, toItem: nil, attribute: .notAnAttribute, constant: 0, priority: UILayoutPriority(rawValue: 51)))
         case .vertical:
-            constraints.append(constraint(item: spacerView, attribute: .width, relatedBy: .equal, toItem: nil, attribute: .notAnAttribute, constant: 0, priority: 51))
+            constraints.append(constraint(item: spacerView, attribute: .width, relatedBy: .equal, toItem: nil, attribute: .notAnAttribute, constant: 0, priority: UILayoutPriority(rawValue: 51)))
         }
         return constraints
     }
@@ -415,10 +422,10 @@ public class TZStackView: UIView {
             switch axis {
             case .horizontal:
                 let multiplier = arrangedSubview.intrinsicContentSize.width / totalSize
-                constraints.append(constraint(item: arrangedSubview, attribute: .width, toItem: self, multiplier: multiplier, priority: priority))
+                constraints.append(constraint(item: arrangedSubview, attribute: .width, toItem: self, multiplier: multiplier, priority: UILayoutPriority(rawValue: priority)))
             case .vertical:
                 let multiplier = arrangedSubview.intrinsicContentSize.height / totalSize
-                constraints.append(constraint(item: arrangedSubview, attribute: .height, toItem: self, multiplier: multiplier, priority: priority))
+                constraints.append(constraint(item: arrangedSubview, attribute: .height, toItem: self, multiplier: multiplier, priority: UILayoutPriority(rawValue: priority)))
             }
         }
         
@@ -453,10 +460,10 @@ public class TZStackView: UIView {
                 }
                 switch axis {
                 case .horizontal:
-                    constraints.append(constraint(item: view, attribute: .leading, relatedBy: relation, toItem: previousView, attribute: .trailing, constant: c, priority: priority))
+                    constraints.append(constraint(item: view, attribute: .leading, relatedBy: relation, toItem: previousView, attribute: .trailing, constant: c, priority: UILayoutPriority(rawValue: priority)))
                     
                 case .vertical:
-                    constraints.append(constraint(item: view, attribute: .top, relatedBy: relation, toItem: previousView, attribute: .bottom, constant: c, priority: priority))
+                    constraints.append(constraint(item: view, attribute: .top, relatedBy: relation, toItem: previousView, attribute: .bottom, constant: c, priority: UILayoutPriority(rawValue: priority)))
                 }
             }
             previousView = view
@@ -577,7 +584,7 @@ public class TZStackView: UIView {
             let countDownPriority = (currentPriority < 1000)
             for view in views {
                 if let firstView = firstView {
-                    constraints.append(constraint(item: firstView, attribute: attribute, toItem: view, priority: currentPriority))
+                    constraints.append(constraint(item: firstView, attribute: attribute, toItem: view, priority: UILayoutPriority(rawValue: currentPriority)))
                 } else {
                     firstView = view
                 }
@@ -590,7 +597,7 @@ public class TZStackView: UIView {
     }
 
     // Convenience method to help make NSLayoutConstraint in a less verbose way
-    private func constraint(item view1: AnyObject, attribute attr1: NSLayoutAttribute, relatedBy relation: NSLayoutRelation = .equal, toItem view2: AnyObject?, attribute attr2: NSLayoutAttribute? = nil, multiplier: CGFloat = 1, constant c: CGFloat = 0, priority: Float = 1000) -> NSLayoutConstraint {
+    private func constraint(item view1: AnyObject, attribute attr1: NSLayoutAttribute, relatedBy relation: NSLayoutRelation = .equal, toItem view2: AnyObject?, attribute attr2: NSLayoutAttribute? = nil, multiplier: CGFloat = 1, constant c: CGFloat = 0, priority: UILayoutPriority = UILayoutPriority(rawValue:1000)) -> NSLayoutConstraint {
 
         let attribute2 = attr2 != nil ? attr2! : attr1
 
